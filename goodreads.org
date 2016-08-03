@@ -1,0 +1,210 @@
+* Intro
+  This is the beginning of me experimenting with the idea of making a
+  small command line utility to download my "read" and "to read" shelves
+  from Goodreads. Mostly I want an excuse to experiment with Rust.
+* Setup
+  I am going to use a few Emacs packages to help me play with the
+  [[https://www.goodreads.com/api/][Goodreads API]]. I don't want to actually install them, so I will just
+  use the *try* package I set up in my [[https://github.com/astronaut-wannabe/dotfiles/blob/master/emacs/.emacs.d/emacs.org#out-of-the-box-packages][Emacs dotfile]].
+
+  #+BEGIN_SRC emacs-lisp
+    (try "restclient")
+    (try "ob-restclient")
+  #+END_SRC
+
+  After those are installed, add *ob-resclient* to the list of
+  Org-Mode's babel languages.
+  #+BEGIN_SRC emacs-lisp
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((restclient . t)))
+  #+END_SRC
+
+#+BEGIN_SRC restclient
+  # Some generic variables
+  :secret  = <REMOVED>
+  :key     = <REMOVED>
+  :user-id = <REMOVED>
+  #
+
+  # get a list of my goodreads shelves
+
+  GET http://www.goodreads.com/shelf/list.xml?key=:key&user_id=:user-id
+
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC nxml
+<?xml version="1.0" encoding="UTF-8"?>
+<GoodreadsResponse>
+  <Request>
+    <authentication>true</authentication>
+    <key>
+      <![CDATA[<REMOVED>]]>
+    </key>
+    <method>
+      <![CDATA[shelf_list]]>
+    </method>
+  </Request>
+  <shelves start="1" end="3" total="3">
+    <user_shelf>
+      <id type="integer">78562640</id>
+      <name>read</name>
+      <book_count type="integer">189</book_count>
+      <exclusive_flag type="boolean">true</exclusive_flag>
+      <description nil="true"/>
+      <sort nil="true"/>
+      <order nil="true"/>
+      <per_page type="integer" nil="true"/>
+      <display_fields>
+      </display_fields>
+      <featured type="boolean">true</featured>
+      <recommend_for type="boolean">false</recommend_for>
+      <sticky type="boolean" nil="true"/>
+    </user_shelf>
+
+    <user_shelf>
+      <id type="integer">78562639</id>
+      <name>currently-reading</name>
+      <book_count type="integer">0</book_count>
+      <exclusive_flag type="boolean">true</exclusive_flag>
+      <description nil="true"/>
+      <sort nil="true"/>
+      <order nil="true"/>
+      <per_page type="integer" nil="true"/>
+      <display_fields>
+      </display_fields>
+      <featured type="boolean">false</featured>
+      <recommend_for type="boolean">false</recommend_for>
+      <sticky type="boolean" nil="true"/>
+    </user_shelf>
+
+    <user_shelf>
+      <id type="integer">78562638</id>
+      <name>to-read</name>
+      <book_count type="integer">389</book_count>
+      <exclusive_flag type="boolean">true</exclusive_flag>
+      <description nil="true"/>
+      <sort nil="true"/>
+      <order>a</order>
+      <per_page type="integer" nil="true"/>
+      <display_fields>
+      </display_fields>
+      <featured type="boolean">false</featured>
+      <recommend_for type="boolean">true</recommend_for>
+      <sticky type="boolean" nil="true"/>
+    </user_shelf>
+
+  </shelves>
+</GoodreadsResponse>
+#+END_SRC
+
+#+BEGIN_SRC restclient
+  # Some generic variables
+  :secret  = <REMOVED>
+  :key     = <REMOVED>
+  :user-id = <REMOVED>
+  #
+  # get a list of books on a specific shelf
+
+  GET http://www.goodreads.com/review/list?key=:key&v=2&shelf=read&id=:user-id&per_page=1
+#+END_SRC
+
+#+RESULTS:
+#+BEGIN_SRC nxml
+<?xml version="1.0" encoding="UTF-8"?>
+<GoodreadsResponse>
+  <Request>
+    <authentication>true</authentication>
+    <key>
+      <![CDATA[<REMOVED>]]>
+    </key>
+    <method>
+      <![CDATA[review_list]]>
+    </method>
+  </Request>
+  <reviews start="1" end="1" total="189">
+    <review>
+      <id>17132494435</id>
+      <book>
+        <id type="integer">25904473</id>
+        <isbn>1455562726</isbn>
+        <isbn13>9781455562725</isbn13>
+        <text_reviews_count type="integer">234</text_reviews_count>
+        <title>So Sad Today</title>
+        <image_url>http://d.gr-assets.com/books/1453682857m/25904473.jpg</image_url>
+        <small_image_url>http://d.gr-assets.com/books/1453682857s/25904473.jpg</small_image_url>
+        <large_image_url/>
+        <link>http://www.goodreads.com/book/show/25904473-so-sad-today</link>
+        <num_pages>206</num_pages>
+        <format>Paperback</format>
+        <edition_information/>
+        <publisher>Grand Central Publishing</publisher>
+        <publication_day>15</publication_day>
+        <publication_year>2016</publication_year>
+        <publication_month>3</publication_month>
+        <average_rating>3.93</average_rating>
+        <ratings_count>1582</ratings_count>
+        <description>Melissa Broder always struggled with anxiety. In the fall of 2012, she went through a harrowing cycle of panic attacks and dread that wouldn't abate for months. So she began @sosadtoday, an anonymous Twitter feed that allowed her to express her darkest feelings, and which quickly gained a dedicated following. In SO SAD TODAY, Broder delves deeper into the existential themes she explores on Twitter, grappling with sex, death, love low self-esteem, addiction, and the drama of waiting for the universe to text you back. With insights as sharp as her humor, Broder explores--in prose that is both ballsy and beautiful, aggressively colloquial and achingly poetic--questions most of us are afraid to even acknowledge, let alone answer, in order to discover what it really means to be a person in this modern world.&lt;br&gt;</description>
+        <authors>
+          <author>
+            <id>3192838</id>
+            <name>Melissa Broder</name>
+            <role>
+            </role>
+            <image_url nophoto='false'>
+              <![CDATA[http://d.gr-assets.com/authors/1328818179p5/3192838.jpg]]>
+            </image_url>
+            <small_image_url nophoto='false'>
+              <![CDATA[http://d.gr-assets.com/authors/1328818179p2/3192838.jpg]]>
+            </small_image_url>
+            <link>
+              <![CDATA[http://www.goodreads.com/author/show/3192838.Melissa_Broder]]>
+            </link>
+            <average_rating>3.95</average_rating>
+            <ratings_count>2102</ratings_count>
+            <text_reviews_count>351</text_reviews_count>
+          </author>
+        </authors>
+        <published>2016</published>
+      </book>
+
+
+      <rating>5</rating>
+      <votes>0</votes>
+      <spoiler_flag>false</spoiler_flag>
+      <spoilers_state>none</spoilers_state>
+      
+
+      <shelves>
+        <shelf name="read" exclusive="true" />
+
+      </shelves>
+      <recommended_for>
+      </recommended_for>
+      <recommended_by>
+      </recommended_by>
+      <started_at>
+      </started_at>
+      <read_at>data</read_at>
+      <date_added>date</date_added>
+      <date_updated>date</date_updated>
+      <read_count>
+      </read_count>
+      <body>
+      </body>
+      <comments_count>0</comments_count>
+      <url>
+        <![CDATA[http://www.goodreads.com/review/show/1713649445]]>
+      </url>
+      <link>
+        <![CDATA[http://www.goodreads.com/review/show/1713649445]]>
+      </link>
+      <owned>0</owned>
+    </review>
+
+  </reviews>
+
+</GoodreadsResponse>
+#+END_SRC
+
