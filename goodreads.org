@@ -20,7 +20,9 @@
      '((restclient . t)))
   #+END_SRC
 
-#+BEGIN_SRC restclient
+  The following API call gets a list of the shelves for a given
+  user. No auth token is needed.
+  #+BEGIN_SRC restclient :exports both
   # Some generic variables
   :secret  = <REMOVED>
   :key     = <REMOVED>
@@ -31,10 +33,10 @@
 
   GET http://www.goodreads.com/shelf/list.xml?key=:key&user_id=:user-id
 
-#+END_SRC
+  #+END_SRC
 
-#+RESULTS:
-#+BEGIN_SRC nxml
+  #+RESULTS:
+  #+BEGIN_SRC nxml
 <?xml version="1.0" encoding="UTF-8"?>
 <GoodreadsResponse>
   <Request>
@@ -97,9 +99,15 @@
 
   </shelves>
 </GoodreadsResponse>
-#+END_SRC
+  #+END_SRC
 
-#+BEGIN_SRC restclient
+  It seems like there is no way to say, "Give me a list of books from
+  X shelf". If there was, I'd just get all the books from the "read"
+  shelf. It seems like the only way to accomplish this is to get all
+  of the reviews from a user...
+  * TODO: Figure out if a book can be "read", but not "reviewed"
+  
+  #+BEGIN_SRC restclient :exports both
   # Some generic variables
   :secret  = <REMOVED>
   :key     = <REMOVED>
@@ -108,10 +116,10 @@
   # get a list of books on a specific shelf
 
   GET http://www.goodreads.com/review/list?key=:key&v=2&shelf=read&id=:user-id&per_page=1
-#+END_SRC
+  #+END_SRC
 
-#+RESULTS:
-#+BEGIN_SRC nxml
+  #+RESULTS:
+  #+BEGIN_SRC nxml
 <?xml version="1.0" encoding="UTF-8"?>
 <GoodreadsResponse>
   <Request>
@@ -206,5 +214,5 @@
   </reviews>
 
 </GoodreadsResponse>
-#+END_SRC
+  #+END_SRC
 
