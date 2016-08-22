@@ -36,7 +36,7 @@
   #+END_SRC
 
   #+RESULTS:
-  #+BEGIN_SRC nxml
+  #+BEGIN_SRC xml
 <?xml version="1.0" encoding="UTF-8"?>
 <GoodreadsResponse>
   <Request>
@@ -119,7 +119,7 @@
   #+END_SRC
 
   #+RESULTS:
-  #+BEGIN_SRC nxml
+  #+BEGIN_SRC xml
 <?xml version="1.0" encoding="UTF-8"?>
 <GoodreadsResponse>
   <Request>
